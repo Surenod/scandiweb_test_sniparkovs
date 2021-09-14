@@ -1,0 +1,115 @@
+/*HEADER==============================================================================================================*/
+header {
+  min-height: 80px;
+  height: 100%;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  position: sticky;
+  top: 0;
+  background: #FFFFFF;
+  z-index: 100;
+}
+
+nav {
+  height: 80px;
+}
+
+.header__menu,
+.header__close {
+  cursor: pointer;
+  display: none;
+}
+
+.header__currencycart {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+}
+
+/*/HEADER==============================================================================================================*/
+
+/*HEADER__LINKS==============================================================================================================*/
+.header__navlinks {
+  list-style: none;
+  display: flex;
+  align-items: center;
+  height: 100%;
+}
+
+.header__navlinks li {
+  padding: 0px 16px;
+  height: 100%;
+  display: flex;
+  align-items: center;
+}
+
+.header__navlinks li a {
+  text-decoration: none;
+  font-style: normal;
+  font-weight: normal;
+  font-size: 16px;
+  line-height: 120%;
+  color: #1D1F22;
+  text-transform: uppercase;
+  outline: none;
+}
+
+.header__navlinks li:hover a {
+  color: #5ECE7B;
+}
+
+.header__navlinks li:hover {
+  border-bottom: 2px solid #5ECE7B;
+}
+
+/*/HEADER__LINKS==============================================================================================================*/
+
+/*MEDIA==============================================================================================================*/
+@media (max-width:769px) {
+
+  .header__navlinks {
+    position: fixed;
+    top: -100%;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    display: flex;
+    justify-content: space-around;
+    flex-direction: column;
+    background: white;
+    z-index: 10;
+    opacity: 0.9;
+    transition: 0.5s linear;
+  }
+
+  .header__navlinks li a {
+    font-weight: bold;
+    font-size: 24px;
+    color: #1D1F22;
+  }
+
+  .header__menu,
+  .header__close {
+    display: block;
+  }
+
+  .header__close {
+    position: absolute;
+    top: 30px;
+    right: 30px;
+    z-index: 20;
+  }
+
+  .toggle {
+    top: 0;
+  }
+}
+
+@media (max-width:1237px) {
+  header {
+    padding: 0px 30px;
+  }
+}
+
+/*/MEDIA==============================================================================================================*/

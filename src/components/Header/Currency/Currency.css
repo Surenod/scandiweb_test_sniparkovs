@@ -1,0 +1,54 @@
+/*CURRENCY==============================================================================================================*/
+.currency {
+  display: flex;
+  gap: 10px;
+  font-style: normal;
+  font-weight: 500;
+  font-size: 18px;
+  line-height: 160%;
+  color: #1D1F22;
+  position: relative;
+  cursor: pointer;
+}
+
+.currency__arrow {
+  transition: 0.2s linear;
+}
+
+.currency__arrow-reverse {
+  transform: rotate(180deg);
+  transition: 0.2s linear;
+}
+
+/*/CURRENCY==============================================================================================================*/
+
+/*CURRENCY__LIST==============================================================================================================*/
+.currency__list {
+  position: absolute;
+  top: 37px;
+  left: -20px;
+  width: 114px;
+  height: auto;
+  background: #FFFFFF;
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 21px;
+  padding: 20px;
+  cursor: pointer;
+  box-shadow: 0px 4px 35px rgba(168, 172, 176, 0.19);
+}
+
+.list__item {
+  font-style: normal;
+  font-weight: 500;
+  font-size: 18px;
+  line-height: 160%;
+  color: #1D1F22;
+}
+
+.list__item:hover {
+  border-bottom: 1px solid #1D1F22;
+}
+
+/*/CURRENCY__LIST==============================================================================================================*/
