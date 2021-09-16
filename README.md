@@ -1,4 +1,4 @@
-Added or changed
+V2 Added or changed
 
 1. Used react-jsx-parser instead of dangerouslySetInnerHTML.
 2. Changed React.Component to PureComponent.
