@@ -1,56 +1,34 @@
 // Import react and react-dom
-import React, { Component } from "react";
+import React, { PureComponent } from "react";
 import { Link } from "react-router-dom";
 
+// Import currency symbol
+import getSymbolFromCurrency from 'currency-symbol-map'
+
 //Import apollo
-import { gql } from "@apollo/client";
 import { Query } from "@apollo/client/react/components";
 
 // Import css and svg
 import "./ProductGrid.css";
 import CartIcon from "../../svg/cart_white.svg";
 
-export class ProductGrid extends Component {
+// Import query
+import PRODUCTGRID_QUERY from "./ProductGridQuery.js";
+
+export class ProductGrid extends PureComponent {
   render() {
-    const categoryName = this.props.categoryName;
-    const PRODUCTGRID_QUERY = gql`
-      query {
-        category(input: { title: "${categoryName}" }) {
-          name
-          products {
-            gallery
-            id
-            name
-            attributes{
-              id
-              name
-              type
-              items{
-                displayValue
-                value
-                id
-              }
-            }
-            prices {
-              currency
-              amount
-            }
-            inStock
-            brand
-          }
-        }
-      }
-    `;
+    const {categoryName, currency, addCart} = this.props;
     return (
-      <Query query={PRODUCTGRID_QUERY}>
+      <Query variables={{categoryName: categoryName}} query={PRODUCTGRID_QUERY}>
         {({ data, loading }) => {
           if (loading) return null;
+          const {category} = data;
           return (
             <div className="category">
-              <div className="category__name">{data.category.name}</div>
+              <div className="category__name">{category.name}</div>
               <div className="category__productsgrid product">
                 {/* Create HTML for every category*/}
-                {data.category.products.map(
+                {category.products.map(
                   (
                     item,
                     indexContainer,
@@ -65,7 +43,7 @@ export class ProductGrid extends Component {
                         {/* If inStock is false open product description without adding to cart */}
                         <Link
                           key={item.id}
-                          to={`/${data.category.name}/${item.id}`}
+                          to={`/${category.name}/${item.id}`}
                         >
                           <img
                             key={indexImg}
@@ -87,7 +65,7 @@ export class ProductGrid extends Component {
                           >
                             {item.brand + " " + item.name}
                           </div>
-                          <div
+                          <p
                             key={indexPrice}
                             className={
                               item.inStock
@@ -98,14 +76,13 @@ export class ProductGrid extends Component {
                             {/* Display currency according to currency state */}
                             {item.prices
                               .map((item) => {
-                                return item.currency === this.props.currency
-                                  ? item.amount
-                                  : null;
+                                if(item.currency === currency.value){
+                                  return getSymbolFromCurrency(item.currency) + " " + item.amount
+                                }
+                                return null
                               })
-                              .join("") +
-                              " " +
-                              this.props.currency}
-                          </div>
+                            }
+                          </p>
                           {/* If inStock is false display product out of stock*/}
                           <div
                             className={
@@ -122,7 +99,7 @@ export class ProductGrid extends Component {
                             item.inStock ? "product__btn" : "product__btn-disable"
                           }
                           onClick={() => {
-                            this.props.addCart([item, itemCount]);
+                            addCart([item, itemCount]);
                           }}
                         >
                           <img src={CartIcon} alt="" width="24" />

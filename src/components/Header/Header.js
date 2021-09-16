@@ -1,9 +1,8 @@
 // Import react and react-router
-import React, { Component } from "react";
+import React, { PureComponent } from "react";
 import { Link } from "react-router-dom";
 
 //Import apollo
-import { gql } from "@apollo/client";
 import { Query } from "@apollo/client/react/components";
 
 // Import svg
@@ -14,23 +13,14 @@ import Logo from "../svg/brand_icon.svg";
 // Import css
 import "./Header.css";
 
+// Import query
+import HEADER_QUERY from "./HeaderQuery.js";
+
 // Import Component
 import Currency from "./Currency/Currency";
 import CartMini from "./CartMini/CartMini";
 
-const HEADER_QUERY = gql`
-  query {
-    categories {
-      name
-    }
-    category {
-      name
-    }
-    currencies
-  }
-`;
-
-export class Header extends Component {
+export class Header extends PureComponent {
   constructor(props) {
     super(props);
 
@@ -39,21 +29,21 @@ export class Header extends Component {
     };
   }
 
-  // Change open state of heade menu(Mobile version)
+  // Change open state of header menu(Mobile version)
   menuToggle = () => {
     this.setState({ toggle: !this.state.toggle });
   };
 
   render() {
-    const { toggle } = this.state;
+    const {toggle} = this.state;
+    const {cart, currency, currencyChange, decrease, increase, openCurrency, openCurrencyToggle, openCartMiniToggle, openCartMini, total} = this.props;
+    console.log("canOpenOne",this.state.canOpenOne)
     return (
       <Query query={HEADER_QUERY}>
         {({ data, loading }) => {
           if (loading) return null;
           // Save incomig data in different variables
-          const categories = data.categories;
-          const category = data.category;
-          const currencies = data.currencies;
+          const {categories, category, currencies} = data;
           return (
             <header>
               <div className="header__menu" onClick={this.menuToggle}>
@@ -89,18 +79,20 @@ export class Header extends Component {
               <div className="header__currencycart">
                 {/* Passing state and functions to child components */}
                 <Currency
-                  currencyChange={this.props.currencyChange}
+                  currencyChange={currencyChange}
                   currencies={currencies}
+                  currency={currency}
+                  openCurrencyToggle={openCurrencyToggle}
+                  openCurrency={openCurrency}
                 />
                 <CartMini
-                  currency={this.props.currency}
-                  cart={this.props.cart}
-                  increase={this.props.increase}
-                  decrease={this.props.decrease}
-                  delete={this.props.delete}
-                  openToggle={this.props.openToggle}
-                  isOpen={this.props.isOpen}
-                  total={this.props.total}
+                  currency={currency}
+                  cart={cart}
+                  increase={increase}
+                  decrease={decrease}
+                  openCartMiniToggle={openCartMiniToggle}
+                  openCartMini={openCartMini}
+                  total={total}
                 />
               </div>
             </header>

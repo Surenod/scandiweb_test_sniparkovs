@@ -71,14 +71,21 @@
   pointer-events: none;
 }
 
-.product-details-description {
-  font-family: Roboto;
-  font-size: 16px;
-  line-height: 159.96%;
+.jsx-parser {
   color: #1D1F22;
   max-width: 292px;
   height: auto;
+  font-family: Roboto;
+  font-size: 16px;
+  line-height: 159.96%;
+  list-style: initial;
+}
 
+.jsx-parser *{
+  font-family: Roboto;
+  font-size: 16px;
+  line-height: 159.96%;
+  list-style: initial;
 }
 
 /*/PRODUCT__DETAILS==============================================================================================================*/

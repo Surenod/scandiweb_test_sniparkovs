@@ -1,5 +1,5 @@
 // Import React
-import React, { Component } from "react";
+import React, { PureComponent } from "react";
 
 // Import Swiper React components
 import { Swiper, SwiperSlide } from "swiper/react";
@@ -15,10 +15,10 @@ import "swiper/components/navigation/navigation.min.css";
 import "./Cart.css";
 import "../../Section/ProductDetails/ProductDetails.css";
 
-// Modules Installation
+// Swiper modules Installation
 SwiperCore.use([Navigation]);
 
-export class Cart extends Component {
+export class Cart extends PureComponent {
   constructor(props) {
     super(props);
 
@@ -33,36 +33,36 @@ export class Cart extends Component {
   };
 
   render() {
-    const cart = this.props.cart;
+    const {cart, currency, increase, decrease} = this.props;
     return (
       <div className="cart">
         <div className="cart-name">CART</div>
         <div className="cart-inner">
           {/* Create HTML for every product in cart */}
           {cart.map((cartItem, index) => {
+            const cartItemData = cartItem[0];
+            const cartItemCount = cartItem[1];
             return (
               <div key={index} className="cart__inner-container">
                 <div className="cart__line" />
-                <div key={cartItem[0].id} className="cart-item">
+                <div key={cartItemData.id} className="cart-item">
                   <div className="cart-item__description">
                     <div className="cart-item__name">
-                      <p className="cart-item__brand">{cartItem[0].brand}</p>
-                      {cartItem[0].name}
+                      <p className="cart-item__brand">{cartItemData.brand}</p>
+                      {cartItemData.name}
                     </div>
                     <p className="cart-item__price">
-                      {cartItem[0].prices
+                      {cartItemData.prices
                         .map((item) => {
-                          return item.currency === this.props.currency
-                            ? (item.amount * cartItem[1]).toFixed(2)
+                          return item.currency === currency.value
+                            ? currency.symbol + " " + (item.amount * cartItemCount).toFixed(2)
                             : null;
                         })
-                        .join("") +
-                        " " +
-                        this.props.currency}
+                      }
                     </p>
                     <form>
                       {/* Create inputs for product attributes */}
-                      {cartItem[0].attributes.map((item) => {
+                      {cartItemData.attributes.map((item) => {
                         return (
                           <div
                             key={item.id}
@@ -85,10 +85,10 @@ export class Cart extends Component {
                                       <span
                                         className={
                                           item.type === "swatch"
-                                            ? cartItem[0].inStock
+                                            ? cartItemData.inStock
                                               ? "product-details-attribute__btn--color"
                                               : "product-details-attribute__btn--color out-of-stock"
-                                            : cartItem[0].inStock
+                                            : cartItemData.inStock
                                             ? "product-details-attribute__btn"
                                             : "product-details-attribute__btn out-of-stock"
                                         }
@@ -116,14 +116,14 @@ export class Cart extends Component {
                     <div className="cartmini-item__count cart-item__count">
                       <button
                         className="cartmini-item__count-btn cart-item__count-btn"
-                        onClick={() => this.props.increase(cartItem[0].id)}
+                        onClick={() => increase(cartItemData.id)}
                       >
                         +
                       </button>
-                      <span>{cartItem[1]}</span>
+                      <span>{cartItemCount}</span>
                       <button
                         className="cartmini-item__count-btn cart-item__count-btn"
-                        onClick={() => this.props.decrease(cartItem[0].id)}
+                        onClick={() => decrease(cartItemData.id)}
                       >
                         -
                       </button>
@@ -136,7 +136,7 @@ export class Cart extends Component {
                         spaceBetween={50}
                         slidesPerView={1}
                       >
-                        {cartItem[0].gallery.map((image, index) => {
+                        {cartItemData.gallery.map((image, index) => {
                           return (
                             <SwiperSlide key={index}>
                               <img src={image} alt="product__img" />
@@ -144,13 +144,6 @@ export class Cart extends Component {
                           );
                         })}
                       </Swiper>
-                    </div>
-                    {/* Remove from cart button */}
-                    <div
-                      className="cartmini-item__remove cart-item__remove"
-                      onClick={() => this.props.delete(cartItem[0].id)}
-                    >
-                      X
                     </div>
                   </div>
                 </div>

@@ -1,14 +1,17 @@
 // Import React
-import React, { Component } from "react";
+import React, { PureComponent } from "react";
 import { Link } from "react-router-dom";
 
 // Import svg
 import CartIcon from "../../svg/cart.svg";
 
+// Import currency symbol
+import getSymbolFromCurrency from 'currency-symbol-map';
+
 // Import css
 import "./CartMini.css";
 
-export class CartMini extends Component {
+export class CartMini extends PureComponent {
   constructor(props) {
     super(props);
 
@@ -23,47 +26,48 @@ export class CartMini extends Component {
   };
 
   render() {
-    const { cart } = this.props;
+    const {cart, currency, decrease, increase, openCartMiniToggle, openCartMini, total} = this.props;
     return (
       <div className="header-cartmini">
         <div
           className="header-cartmini__btn"
-          onClick={() => this.props.openToggle()}
+          onClick={() => {openCartMiniToggle()}}
         >
           <img src={CartIcon} alt="" width="20" />
           <span className="header-cartmini__count">
-            {this.props.cart.length}
+            {cart.length}
           </span>
         </div>
         {/* If state isopen === true, render Cartmini html */}
-        {this.props.isOpen ? (
+        {openCartMini ? ( 
           <div className="header-cartmini__container">
             <p className="cartmini-title">
-              <b>My Bag,</b> {this.props.cart.length}{" "}
+              <b>My Bag,</b> {cart.length}{" "}
               {cart.length <= 1 ? "item" : "items"}
             </p>
             {/* Render product HTML for every product in cart */}
             {cart.map((cartItem) => {
+              const cartItemData = cartItem[0];
               const cartItemCount = cartItem[1];
               return (
-                <div key={cartItem[0].id} className="cartmini-item">
+                <div key={cartItemData.id} className="cartmini-item">
                   <div className="cartmini-item__description">
                     <p className="cartmini-item__name">
-                      {cartItem[0].brand} {cartItem[0].name}
+                      {cartItemData.brand} {cartItemData.name}
                     </p>
                     <div className="cartmini-item__price">
-                      {cartItem[0].prices.map((e) => {
-                        if (e.currency !== this.props.currency) {
+                      {cartItemData.prices.map((e) => {
+                        if (e.currency !== currency.value) {
                           return null;
                         }
                         return (
-                          (e.amount * cartItem[1]).toFixed(2) + " " + e.currency
+                          getSymbolFromCurrency(e.currency) + " " + (e.amount * cartItemCount).toFixed(2)
                         );
                       })}
                     </div>
                     <form>
                       {/* Render custom inputs for product attributes */}
-                      {cartItem[0].attributes.map((attribute) => {
+                      {cartItemData.attributes.map((attribute) => {
                         return (
                           <ul
                             className="cartmini-item__form-list"
@@ -86,10 +90,10 @@ export class CartMini extends Component {
                                       <span
                                         className={
                                           attribute.type === "swatch"
-                                            ? cartItem[0].inStock
+                                            ? cartItemData.inStock
                                               ? "cartmini-item-attribute__btn--color"
                                               : "cartmini-item-attribute__btn--color-out-of-stock"
-                                            : cartItem[0].inStock
+                                            : cartItemData.inStock
                                             ? "cartmini-item-attribute__btn"
                                             : "cartmini-item-attribute__btn-out-of-stock"
                                         }
@@ -118,34 +122,28 @@ export class CartMini extends Component {
                     {/* Html for increase and decrease product amount buttons */}
                     <button
                       className="cartmini-item__count-btn"
-                      onClick={() => this.props.increase(cartItem[0].id)}
+                      onClick={() => increase(cartItemData.id)}
                     >
                       +
                     </button>
                     <span>{cartItemCount}</span>
                     <button
                       className="cartmini-item__count-btn"
-                      onClick={() => this.props.decrease(cartItem[0].id)}
+                      onClick={() => decrease(cartItemData.id)}
                     >
                       -
                     </button>
                   </div>
                   {/* Product image and remove button */}
                   <div className="cartmini-item__img">
-                    <img src={cartItem[0].gallery[0]} alt="product__img" />
-                  </div>
-                  <div
-                    className="cartmini-item__remove"
-                    onClick={() => this.props.delete(cartItem[0].id)}
-                  >
-                    X
+                    <img src={cartItemData.gallery[0]} alt="product__img" />
                   </div>
                 </div>
               );
             })}
             <div className="cartmini__total-price">
               <p>Total:</p>
-              <p>{this.props.total + " " + this.props.currency}</p>
+              <p>{currency.symbol + " " + total}</p>
             </div>
             <div className="cartmini__submit">
               <Link to="/cart">

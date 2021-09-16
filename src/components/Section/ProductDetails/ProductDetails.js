@@ -1,9 +1,14 @@
 // Import react and react-dom
-import React, { Component } from "react";
+import React, { PureComponent } from "react";
 
 //Import apollo
-import { gql } from "@apollo/client";
 import { Query } from "@apollo/client/react/components";
+
+// Import currency symbol
+import getSymbolFromCurrency from 'currency-symbol-map';
+
+// Import react-jsx-parser
+import JsxParser from 'react-jsx-parser';
 
 // Import components
 import ProductGallery from "./ProductGallery/ProductGallery.js";
@@ -11,7 +16,10 @@ import ProductGallery from "./ProductGallery/ProductGallery.js";
 // Import css and svg
 import "./ProductDetails.css";
 
-export class ProductDetails extends Component {
+// Import query
+import PRODUCTDETAILS_QUERY from "./ProductDetailsQuery";
+
+export class ProductDetails extends PureComponent {
   constructor(props) {
     super(props);
 
@@ -24,41 +32,15 @@ export class ProductDetails extends Component {
   setValue = (e) => {
     this.setState({ [e.target.name]: e.target.value });
   };
-
+  
   render() {
+    const {currency,addCart} = this.props;
     const productsID = this.props.match.params.id;
-    const PRODUCTDETAILS_QUERY = gql`
-    query{
-      product(id:"${productsID}"){
-        id
-        name
-        inStock
-        gallery
-        description
-        category
-        attributes{
-          id
-          name
-          type
-          items{
-            displayValue
-            value
-            id
-          }
-        }
-        prices{
-          currency
-          amount
-        }
-        brand
-      }
-    }
-    `;
     return (
-      <Query query={PRODUCTDETAILS_QUERY}>
+      <Query variables={{productID: productsID}} query={PRODUCTDETAILS_QUERY}>
         {({ data, loading }) => {
           if (loading) return null;
-          const product = data.product;
+          const {product} = data;
           const productCount = 1;
           return (
             <>
@@ -122,13 +104,11 @@ export class ProductDetails extends Component {
                         {/* Display product price */}
                         {product.prices
                           .map((item) => {
-                            return item.currency === this.props.currency
-                              ? item.amount
+                            return item.currency === currency.value
+                              ? getSymbolFromCurrency(item.currency) + " " + item.amount
                               : null;
                           })
-                          .join("") +
-                          " " +
-                          this.props.currency}
+                        }
                       </p>
                     </div>
                     {/* If inStock is false create out of stock button else add to cart button */}
@@ -149,18 +129,14 @@ export class ProductDetails extends Component {
                       }
                       onClick={(e) => {
                         e.preventDefault();
-                        this.props.addCart([product, productCount]);
+                        addCart([product, productCount]);
                       }}
                     >
                       ADD TO CART
                     </button>
                   </form>
                   {/* Parse and display product description */}
-                  <div className="product-details-description">
-                    <div
-                      dangerouslySetInnerHTML={{ __html: product.description }}
-                    />
-                  </div>
+                  <JsxParser jsx={product.description}/>
                 </div>
               </div>
             </>

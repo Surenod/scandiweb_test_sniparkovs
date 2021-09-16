@@ -1,48 +1,49 @@
 // Import React
-import React, { Component } from "react";
+import React, { PureComponent } from "react";
 
 // Import svg
 import arrowDown from "../../svg/arrow_down.svg";
 
+// Import currency symbol
+import getSymbolFromCurrency from 'currency-symbol-map';
+
 // Import css
 import "./Currency.css";
 
-export class Currency extends Component {
-  state = {
-    listOpen: false,
-  };
+function currencyName(currency){
+  return currency.split(" ")
+}
 
-  // Change state to open or close currency menu
-  openToggle = () => {
-    this.setState({ listOpen: !this.state.listOpen });
-  };
+export class Currency extends PureComponent {
+
 
   render() {
+    const {currencies, currency, currencyChange, openCurrency, openCurrencyToggle, } = this.props;
     return (
-      <div className="currency" onClick={this.openToggle}>
-        $
+      <div className="currency" onClick={() => openCurrencyToggle()}>
+        {currency.symbol}
         <img
           src={arrowDown}
           alt=""
           width="6"
           // Turn the dropdown arrow when menu opens
           className={
-            this.state.listOpen ? "currency__arrow-reverse" : "currency__arrow"
+            openCurrency ? "currency__arrow-reverse" : "currency__arrow"
           }
         />
         {/* When open state is true render list of currencies */}
-        {this.state.listOpen ? (
+        {openCurrency ? ( 
           <ul className="currency__list list">
-            {this.props.currencies.map((currency) => {
+            {currencies.map((currency) => {
               return (
                 <li
                   key={currency}
                   className="list__item"
                   onClick={(e) => {
-                    this.props.currencyChange(e.target.innerText)
+                    currencyChange(currencyName(e.target.innerText))
                   }}
                 >
-                  {currency}
+                {getSymbolFromCurrency(currency)} {currency}
                 </li>
               );
             })}

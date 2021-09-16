@@ -1,7 +1,7 @@
 // Import React
-import React, { Component } from "react";
+import React, { PureComponent } from "react";
 
-export class ProductGallery extends Component {
+export class ProductGallery extends PureComponent {
   constructor(props) {
     super(props);
     this.state = {
@@ -16,16 +16,18 @@ export class ProductGallery extends Component {
   }
 
   render() {
+    const {product} = this.props;
+    const {bigImgUrl} = this.state;
     return (
       <div className="product-details-gallery">
         {/* Create gallery images */}
         <ul className="product-details-gallery__list">
-          {this.props.product.gallery.map((photo, index) => {
+          {product.gallery.map((photo, index) => {
             return (
               <li key={index} className="product-details__img">
                 <img
                   src={photo}
-                  alt={this.props.product.id}
+                  alt={product.id}
                   onClick={() => this.setBigImg(photo)}
                 />
               </li>
@@ -35,8 +37,8 @@ export class ProductGallery extends Component {
         {/* Create gallery big image */}
         <div className="product-details__img--big">
           <img
-            src={this.state.bigImgUrl}
-            alt={this.props.product.id}
+            src={bigImgUrl}
+            alt={product.id}
           />
         </div>
       </div>

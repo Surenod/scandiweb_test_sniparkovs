@@ -1,34 +1,22 @@
 // Import react and react-dom
-import React, { Component } from "react";
+import React, { PureComponent } from "react";
 import { Route } from "react-router-dom";
 
 //Import apollo
-import { gql } from "@apollo/client";
 import { Query } from "@apollo/client/react/components";
+
+// Import query
+import SECTION_QUERY from "./SectionQuery.js";
 
 // Import component
 import ProductGrid from "./ProductGrid/ProductGrid.js";
 import ProductDetails from "./ProductDetails/ProductDetails.js";
 import Cart from "./Cart/Cart.js";
 
-export class Section extends Component {
+export class Section extends PureComponent {
   render() {
-    const SECTION_QUERY = gql`
-      query {
-        categories {
-          name
-          products {
-            id
-          }
-        }
-        category {
-          name
-          products {
-            id
-          }
-        }
-      }
-    `;
+    // Declaring variables
+    const {addCart, cart, currency, decrease, increase} = this.props;
     return (
       <Query query={SECTION_QUERY}>
         {({ data, loading }) => {
@@ -41,8 +29,8 @@ export class Section extends Component {
                   <div key={indexObj}>
                     <Route key={item.name} path={"/" + item.name} exact>
                       <ProductGrid
-                        currency={this.props.currency}
-                        addCart={this.props.addCart}
+                        currency={currency}
+                        addCart={addCart}
                         categoryName={item.name}
                       />
                     </Route>
@@ -51,9 +39,9 @@ export class Section extends Component {
                       path={"/" + item.name + "/:id"}
                       render={(props) => (
                         <ProductDetails
-                          currency={this.props.currency}
+                          currency={currency}
+                          addCart={addCart}
                           {...props}
-                          addCart={this.props.addCart}
                         />
                       )}
                     />
@@ -63,18 +51,18 @@ export class Section extends Component {
               {/* Create "all" category route */}
               <Route path="/all" exact>
                 <ProductGrid
-                  currency={this.props.currency}
+                  currency={currency}
                   categoryName=""
-                  addCart={this.props.addCart}
+                  addCart={addCart}
                 />
               </Route>
               <Route
                 path="/all/:id"
                 render={(props) => (
                   <ProductDetails
-                    currency={this.props.currency}
+                    currency={currency}
+                    addCart={addCart}
                     {...props}
-                    addCart={this.props.addCart}
                   />
                 )}
               />
@@ -83,13 +71,12 @@ export class Section extends Component {
                 path="/cart"
                 render={(props) => (
                   <Cart
-                    currency={this.props.currency}
+                    currency={currency}
+                    addCart={addCart}
+                    cart={cart}
+                    increase={increase}
+                    decrease={decrease}
                     {...props}
-                    addCart={this.props.addCart}
-                    cart={this.props.cart}
-                    increase={this.props.increase}
-                    decrease={this.props.decrease}
-                    delete={this.props.delete}
                   />
                 )}
               />

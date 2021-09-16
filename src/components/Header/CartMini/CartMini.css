@@ -76,17 +76,6 @@
   margin-right: 18px;
 }
 
-.cartmini-item__remove {
-  position: absolute;
-  top: 0;
-  right: 0;
-  cursor: pointer;
-  font-weight: bold;
-  font-size: 16px;
-  line-height: 160%;
-  color: #1D1F22;
-}
-
 /*/CARTMINI__ITEM==============================================================================================================*/
 
 /*CARTMINI-ITEM-FORM==============================================================================================================*/

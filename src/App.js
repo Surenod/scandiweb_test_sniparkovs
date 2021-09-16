@@ -1,5 +1,5 @@
 // Import react and react-rrouter
-import React, { Component } from "react";
+import React, { PureComponent } from "react";
 import { BrowserRouter as Router } from "react-router-dom";
 
 // Import components
@@ -9,14 +9,15 @@ import Section from "./components/Section/Section.js";
 // Import css
 import "./App.css";
 
-export default class App extends Component {
+export default class App extends PureComponent {
   constructor(props) {
     super(props);
 
     this.state = {
-      currency: "USD",
+      currency: {symbol: "$", value: 'USD'},
       cart: [],
-      isOpen: false,
+      openCurrency: false,
+      openCartMini: false,
       total: 0,
     };
 
@@ -25,18 +26,25 @@ export default class App extends Component {
     this.addCart = this.addCart.bind(this);
     this.increase = this.increase.bind(this);
     this.decrease = this.decrease.bind(this);
-    this.delete = this.delete.bind(this);
-    this.openToggle = this.openToggle.bind(this);
+    this.deleteItem = this.deleteItem.bind(this);
+    this.openCurrencyToggle = this.openCurrencyToggle.bind(this);
+    this.openCartMiniToggle = this.openCartMiniToggle.bind(this);
   }
   
   // Change currency function
   currencyChange(e) {
-    this.setState({ currency: e });
+    this.setState({ currency: {symbol: e[0], value: e[1]} });
   }
 
   // Change open state function
-  openToggle() {
-    this.setState({ isOpen: !this.state.isOpen });
+  openCurrencyToggle() {
+    this.setState({ openCurrency: !this.state.openCurrency });
+    this.setState({ openCartMini: false });
+  }
+
+  openCartMiniToggle() {
+    this.setState({ openCartMini: !this.state.openCartMini });
+    this.setState({ openCurrency: false });
   }
 
   // Add elements to cart function
@@ -67,7 +75,7 @@ export default class App extends Component {
   decrease(id) {
     this.state.cart.map((item) => {
       if (item[0].id === id) {
-        return item[1] <= 1 ? (item[1] = 1) : (item[1] -= 1);
+        return item[1] <= 1 ? (this.deleteItem(id)) : (item[1] -= 1);
       }
       return null;
     });
@@ -75,7 +83,7 @@ export default class App extends Component {
   }
 
   // Delete product from cart function
-  delete(id) {
+  deleteItem(id) {
     this.state.cart.map((item, index) => {
       if (item[0].id === id) {
         return this.state.cart.splice(index, 1);
@@ -91,7 +99,7 @@ export default class App extends Component {
       .map((item) => {
         return item[0].prices
           .map((price) => {
-            if (price.currency === this.state.currency) {
+            if (price.currency === this.state.currency.value) {
               return price.amount * item[1];
             }
             return null;
@@ -105,6 +113,8 @@ export default class App extends Component {
   }
 
   render() {
+    // Declaring variables
+    const {currency, cart, openCurrency, openCartMini, total} = this.state;
     return (
       <div
         className="application"
@@ -117,27 +127,28 @@ export default class App extends Component {
             <Router>
               <Header
                 currencyChange={this.currencyChange}
-                cart={this.state.cart}
-                currency={this.state.currency}
+                cart={cart}
+                currency={currency}
                 increase={this.increase}
                 decrease={this.decrease}
-                delete={this.delete}
-                openToggle={this.openToggle}
-                isOpen={this.state.isOpen}
-                total={this.state.total}
+                openCurrencyToggle={this.openCurrencyToggle}
+                openCurrency={openCurrency}
+                openCartMiniToggle={this.openCartMiniToggle}
+                openCartMini={openCartMini}
+                total={total}
               />
               <Section
-                currency={this.state.currency}
-                cart={this.state.cart}
+                currency={currency}
+                cart={cart}
                 addCart={this.addCart}
                 increase={this.increase}
                 decrease={this.decrease}
-                delete={this.delete}
               />
             </Router>
           </div>
         </div>
-        {this.state.isOpen ? <div className="app__overlay"></div> : null}
+        {/* Show overlay background if cartmini is open */}
+        {openCartMini ? <div className="app__overlay"></div> : null}
       </div>
     );
   }
