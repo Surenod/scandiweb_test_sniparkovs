@@ -10,4 +10,4 @@ V2 Added or changed
 
 V2.1 Added or changed
 
-1.Product cannot be added to cart without configurable options, not from product details page, not from product list page. If product have configurable options add to cart button on product list page redirect to product detail page.
+1. Product cannot be added to cart without configurable options, not from product details page, not from product list page. If product have configurable options add to cart button on product list page redirect to product detail page.
