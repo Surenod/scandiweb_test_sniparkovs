@@ -37,7 +37,6 @@ export class Header extends PureComponent {
   render() {
     const {toggle} = this.state;
     const {cart, currency, currencyChange, decrease, increase, openCurrency, openCurrencyToggle, openCartMiniToggle, openCartMini, total} = this.props;
-    console.log("canOpenOne",this.state.canOpenOne)
     return (
       <Query query={HEADER_QUERY}>
         {({ data, loading }) => {

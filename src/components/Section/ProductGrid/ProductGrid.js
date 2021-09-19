@@ -3,7 +3,7 @@ import React, { PureComponent } from "react";
 import { Link } from "react-router-dom";
 
 // Import currency symbol
-import getSymbolFromCurrency from 'currency-symbol-map'
+import getSymbolFromCurrency from "currency-symbol-map";
 
 //Import apollo
 import { Query } from "@apollo/client/react/components";
@@ -17,12 +17,15 @@ import PRODUCTGRID_QUERY from "./ProductGridQuery.js";
 
 export class ProductGrid extends PureComponent {
   render() {
-    const {categoryName, currency, addCart} = this.props;
+    const { categoryName, currency, addCart } = this.props;
     return (
-      <Query variables={{categoryName: categoryName}} query={PRODUCTGRID_QUERY}>
+      <Query
+        variables={{ categoryName: categoryName }}
+        query={PRODUCTGRID_QUERY}
+      >
         {({ data, loading }) => {
           if (loading) return null;
-          const {category} = data;
+          const { category } = data;
           return (
             <div className="category">
               <div className="category__name">{category.name}</div>
@@ -41,10 +44,7 @@ export class ProductGrid extends PureComponent {
                     return (
                       <div key={indexContainer} className="product__container">
                         {/* If inStock is false open product description without adding to cart */}
-                        <Link
-                          key={item.id}
-                          to={`/${category.name}/${item.id}`}
-                        >
+                        <Link key={item.id} to={`/${category.name}/${item.id}`}>
                           <img
                             key={indexImg}
                             src={item.gallery[0]}
@@ -74,14 +74,16 @@ export class ProductGrid extends PureComponent {
                             }
                           >
                             {/* Display currency according to currency state */}
-                            {item.prices
-                              .map((item) => {
-                                if(item.currency === currency.value){
-                                  return getSymbolFromCurrency(item.currency) + " " + item.amount
-                                }
-                                return null
-                              })
-                            }
+                            {item.prices.map((item) => {
+                              if (item.currency === currency.value) {
+                                return (
+                                  getSymbolFromCurrency(item.currency) +
+                                  " " +
+                                  item.amount
+                                );
+                              }
+                              return null;
+                            })}
                           </p>
                           {/* If inStock is false display product out of stock*/}
                           <div
@@ -91,19 +93,23 @@ export class ProductGrid extends PureComponent {
                           >
                             OUT OF STOCK
                           </div>
+                          {/* Create add cart button */}
+                          <div
+                            key={indexCartBtn}
+                            className={
+                              item.inStock
+                                ? "product__btn"
+                                : "product__btn-disable"
+                            }
+                            onClick={() => {
+                              if (item.attributes.length === 0) {
+                                addCart([item, itemCount]);
+                              }
+                            }}
+                          >
+                            <img src={CartIcon} alt="" width="24" />
+                          </div>
                         </Link>
-                        {/* Create add cart button */}
-                        <div
-                          key={indexCartBtn}
-                          className={
-                            item.inStock ? "product__btn" : "product__btn-disable"
-                          }
-                          onClick={() => {
-                            addCart([item, itemCount]);
-                          }}
-                        >
-                          <img src={CartIcon} alt="" width="24" />
-                        </div>
                       </div>
                     );
                   }
