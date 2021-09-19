@@ -129,10 +129,14 @@ export class ProductDetails extends PureComponent {
                       }
                       onClick={(e) => {
                         e.preventDefault();
-                        if(Object.keys(this.state).length !== 0){
+                        if(product.attributes.length === 0 ){
                           addCart([product, productCount]);
                         } else {
-                          alert("Choose product properties.")
+                          if(Object.keys(this.state).length !== 0){
+                            addCart([product, productCount]);
+                          } else {
+                            alert("Choose product properties.")
+                          }
                         }
                       }}
                     >
