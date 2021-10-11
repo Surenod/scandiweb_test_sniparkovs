@@ -14,3 +14,4 @@ V2.1 Added or changed
 
 
 To open this project you have to download the project and end point(from this link: https://github.com/scandiweb/junior-react-endpoint) and launch it.
+Here were used react.
